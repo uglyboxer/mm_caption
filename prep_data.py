@@ -43,4 +43,4 @@ directory = '{}/data/Flicker8k_Dataset'.format(home)
 features = extract_features(directory)
 print('Extracted Features: {}'.format(len(features)))
 # save to file
-dump(features, open('{}/features.pkl'.format(home), 'wb'))
+dump(features, open('{}/data/features.pkl'.format(home), 'wb'))

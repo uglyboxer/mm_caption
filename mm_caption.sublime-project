@@ -1,0 +1,16 @@
+{
+	"folders":
+	[
+		{
+			"path": "/Users/cole-home/repos/mm_caption"
+		}
+	],
+    "settings": {
+        // ...
+        "python_interpreter": "/Users/cole-home/.virtualenvs/mm_caption/bin/python3.6",
+
+        "python_package_paths": [
+            "/Users/cole-home/.virtualenvs/mm_caption/lib/python3.6/site-packages"
+        ]
+    }
+}
