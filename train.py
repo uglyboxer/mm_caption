@@ -114,7 +114,7 @@ def define_model(vocab_size, max_length):
     # feature extractor model
     inputs1 = Input(shape=(4096,))
     fe1 = Dropout(0.2)(inputs1)
-    fe2 = Dense(512, activation='relu')(fe1)
+    fe2 = Dense(1024, activation='relu')(fe1)
     # sequence model
     inputs2 = Input(shape=(max_length,))
     se1 = Embedding(vocab_size, 256, mask_zero=True)(inputs2)
@@ -179,4 +179,4 @@ model = define_model(vocab_size, max_length)
 filepath = 'weights/model-ep{epoch:03d}-loss{loss:.3f}-val_loss{val_loss:.3f}.h5'
 checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
 # fit model
-model.fit([X1train, X2train], ytrain, epochs=20, verbose=1, callbacks=[checkpoint], validation_data=([X1test, X2test], ytest))
+model.fit([X1train, X2train], ytrain, epochs=4, verbose=1, callbacks=[checkpoint], validation_data=([X1test, X2test], ytest))
