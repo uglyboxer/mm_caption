@@ -70,7 +70,7 @@ tokenizer = load(open('{}/data/tokenizer.pkl'.format(home), 'rb'))
 # pre-define the max sequence length (from training)
 max_length = 34
 # load the model
-model = load_model('weights/model-ep004-loss3.596-val_loss3.841.h5')
+model = load_model('weights/model-ep004-loss3.513-val_loss3.858.h5')
 # load and prepare the photograph
 filename = input("Photo's filename: ")
 if not filename:
