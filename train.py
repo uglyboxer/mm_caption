@@ -129,7 +129,7 @@ def define_model(vocab_size, max_length):
     model.compile(loss='categorical_crossentropy', optimizer='adam')
     # summarize model
     print(model.summary())
-    plot_model(model, to_file='model.png', show_shapes=True)
+    # plot_model(model, to_file='model.png', show_shapes=True)
     return model
 
 # train dataset
@@ -137,14 +137,14 @@ def define_model(vocab_size, max_length):
 home = str(Path.home())
 
 # load training dataset (6K)
-filename = 'Flickr8k_text/Flickr_8k.trainImages.txt'
+filename = '{}/data/Flickr8k_text/Flickr_8k.trainImages.txt'.format(home)
 train = load_set(filename)
 print('Dataset: %d' % len(train))
 # descriptions
-train_descriptions = load_clean_descriptions('descriptions.txt', train)
+train_descriptions = load_clean_descriptions('{}/data/descriptions.txt'.format(home), train)
 print('Descriptions: train=%d' % len(train_descriptions))
 # photo features
-train_features = load_photo_features('features.pkl', train)
+train_features = load_photo_features('{}/data/features.pkl'.format(home), train)
 print('Photos: train=%d' % len(train_features))
 # prepare tokenizer
 tokenizer = create_tokenizer(train_descriptions)
@@ -159,14 +159,14 @@ X1train, X2train, ytrain = create_sequences(tokenizer, max_length, train_descrip
 # dev dataset
 
 # load test set
-filename = 'Flickr8k_text/Flickr_8k.devImages.txt'
+filename = '{}/data/Flickr8k_text/Flickr_8k.devImages.txt'.format(home)
 test = load_set(filename)
 print('Dataset: %d' % len(test))
 # descriptions
-test_descriptions = load_clean_descriptions('descriptions.txt', test)
+test_descriptions = load_clean_descriptions('{}/data/descriptions.txt'.format(home), test)
 print('Descriptions: test=%d' % len(test_descriptions))
 # photo features
-test_features = load_photo_features('features.pkl', test)
+test_features = load_photo_features('{}/data/features.pkl'.format(home), test)
 print('Photos: test=%d' % len(test_features))
 # prepare sequences
 X1test, X2test, ytest = create_sequences(tokenizer, max_length, test_descriptions, test_features)
@@ -176,7 +176,7 @@ X1test, X2test, ytest = create_sequences(tokenizer, max_length, test_description
 # define the model
 model = define_model(vocab_size, max_length)
 # define checkpoint callback
-filepath = 'model-ep{epoch:03d}-loss{loss:.3f}-val_loss{val_loss:.3f}.h5'
+filepath = 'weights/model-ep{epoch:03d}-loss{loss:.3f}-val_loss{val_loss:.3f}.h5'
 checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
 # fit model
 model.fit([X1train, X2train], ytrain, epochs=20, verbose=2, callbacks=[checkpoint], validation_data=([X1test, X2test], ytest))
