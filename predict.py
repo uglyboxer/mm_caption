@@ -1,4 +1,5 @@
 from pickle import load
+from pathlib import Path
 from numpy import argmax
 from keras.preprocessing.sequence import pad_sequences
 from keras.applications.vgg16 import VGG16
@@ -63,12 +64,13 @@ def generate_desc(model, tokenizer, photo, max_length):
             break
     return in_text
 
+home = str(Path.home())
 # load the tokenizer
-tokenizer = load(open('tokenizer.pkl', 'rb'))
+tokenizer = load(open('{}/data/tokenizer.pkl'.format(home), 'rb'))
 # pre-define the max sequence length (from training)
 max_length = 34
 # load the model
-model = load_model('model-ep002-loss3.245-val_loss3.612.h5')
+model = load_model('weights/model-ep004-loss3.596-val_loss3.841.h5')
 # load and prepare the photograph
 filename = input("Photo's filename: ")
 if not filename:
