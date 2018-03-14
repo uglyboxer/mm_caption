@@ -47,7 +47,7 @@ def load_clean_descriptions(filename, dataset):
     for line in doc.split('\n'):
         # split line by white space
         tokens = line.split()
-        if not tokens:
+        if not tokens or tokens[0] == '':
             continue
         # split id from description
         image_id, image_desc = tokens[0], tokens[1:]
