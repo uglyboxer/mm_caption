@@ -136,7 +136,6 @@ def define_model(vocab_size, max_length):
 # train dataset
 
 
-# TODO write file of train and val images that are just the file names
 home = str(Path.home())
 
 # load training dataset (6K)

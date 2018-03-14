@@ -31,7 +31,8 @@ def parse_image_names(filepath, destination):
     with open(filepath, 'r') as f:
         for line in f.readlines():
             id_ = line.split()
-            image_ids.add(id_)
+            if id_:
+                image_ids.add(id_[0])
 
     with open(destination, 'w') as g:
         for x in image_ids:
