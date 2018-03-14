@@ -1,10 +1,11 @@
-from numpy import array
 from pathlib import Path
 from pickle import load
+
+from numpy import array
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.utils import to_categorical
-from keras.utils import plot_model
+# from keras.utils import plot_model
 from keras.models import Model
 from keras.layers import Input
 from keras.layers import Dense
@@ -134,14 +135,18 @@ def define_model(vocab_size, max_length):
 
 # train dataset
 
+
+# TODO write file of train and val images that are just the file names
 home = str(Path.home())
 
 # load training dataset (6K)
-filename = '{}/data/Flickr8k_text/Flickr_8k.trainImages.txt'.format(home)
+# filename = '{}/data/Flickr8k_text/Flickr_8k.trainImages.txt'.format(home)
+filename = '{}/data/coco/train_images.txt'.format(home)
 train = load_set(filename)
 print('Dataset: %d' % len(train))
 # descriptions
-train_descriptions = load_clean_descriptions('{}/data/descriptions.txt'.format(home), train)
+# train_descriptions = load_clean_descriptions('{}/data/descriptions.txt'.format(home), train)
+train_descriptions = load_clean_descriptions('{}/data/train_descriptions.txt'.format(home), train)
 print('Descriptions: train=%d' % len(train_descriptions))
 # photo features
 train_features = load_photo_features('{}/data/features.pkl'.format(home), train)
@@ -156,14 +161,16 @@ print('Description Length: %d' % max_length)
 # prepare sequences
 X1train, X2train, ytrain = create_sequences(tokenizer, max_length, train_descriptions, train_features)
 
+
 # dev dataset
 
 # load test set
-filename = '{}/data/Flickr8k_text/Flickr_8k.devImages.txt'.format(home)
+# filename = '{}/data/Flickr8k_text/Flickr_8k.devImages.txt'.format(home)
+filename = '{}/data/coco/val_images.txt'.format(home)
 test = load_set(filename)
 print('Dataset: %d' % len(test))
 # descriptions
-test_descriptions = load_clean_descriptions('{}/data/descriptions.txt'.format(home), test)
+test_descriptions = load_clean_descriptions('{}/data/val_descriptions.txt'.format(home), test)
 print('Descriptions: test=%d' % len(test_descriptions))
 # photo features
 test_features = load_photo_features('{}/data/features.pkl'.format(home), test)
