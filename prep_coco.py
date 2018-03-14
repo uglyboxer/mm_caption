@@ -2,6 +2,8 @@ import json
 from os import listdir
 from pathlib import Path
 from pickle import dump
+
+from tqdm import tqdm
 from keras.applications.vgg16 import VGG16
 from keras.preprocessing.image import load_img
 from keras.preprocessing.image import img_to_array
@@ -51,7 +53,7 @@ def extract_features(directory):
     print(model.summary())
     # extract features from each photo
     features = dict()
-    for name in listdir(directory):
+    for name in tqdm(listdir(directory)):
         # load an image from file
         filename = directory + '/' + name
         image = load_img(filename, target_size=(224, 224))
@@ -67,15 +69,15 @@ def extract_features(directory):
         image_id = name.split('.')[0]
         # store feature
         features[image_id] = feature
-        print('>{}'.format(name))
+        # print('>{}'.format(name))
     return features
 
 
 # parse_cap_file('/Users/cole-home/data/coco/annotations/captions_train2017.json', '/Users/cole-home/data/coco/train_descriptions.txt')
 # parse_cap_file('/Users/cole-home/data/coco/annotations/captions_val2017.json', '/Users/cole-home/data/coco/val_descriptions.txt')
 
-parse_image_names('/Users/cole-home/data/coco/train_descriptions.txt', '/Users/cole-home/data/coco/train_images.txt')
-parse_image_names('/Users/cole-home/data/coco/val_descriptions.txt', '/Users/cole-home/data/coco/val_images.txt')
+# parse_image_names('/Users/cole-home/data/coco/train_descriptions.txt', '/Users/cole-home/data/coco/train_images.txt')
+# parse_image_names('/Users/cole-home/data/coco/val_descriptions.txt', '/Users/cole-home/data/coco/val_images.txt')
 
 
 # extract features from all images

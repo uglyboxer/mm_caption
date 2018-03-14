@@ -145,10 +145,10 @@ train = load_set(filename)
 print('Dataset: %d' % len(train))
 # descriptions
 # train_descriptions = load_clean_descriptions('{}/data/descriptions.txt'.format(home), train)
-train_descriptions = load_clean_descriptions('{}/data/train_descriptions.txt'.format(home), train)
+train_descriptions = load_clean_descriptions('{}/data/coco/train_descriptions.txt'.format(home), train)
 print('Descriptions: train=%d' % len(train_descriptions))
 # photo features
-train_features = load_photo_features('{}/data/features.pkl'.format(home), train)
+train_features = load_photo_features('{}/data/coco/train_features.pkl'.format(home), train)
 print('Photos: train=%d' % len(train_features))
 # prepare tokenizer
 tokenizer = create_tokenizer(train_descriptions)
@@ -169,10 +169,10 @@ filename = '{}/data/coco/val_images.txt'.format(home)
 test = load_set(filename)
 print('Dataset: %d' % len(test))
 # descriptions
-test_descriptions = load_clean_descriptions('{}/data/val_descriptions.txt'.format(home), test)
+test_descriptions = load_clean_descriptions('{}/data/coco/val_descriptions.txt'.format(home), test)
 print('Descriptions: test=%d' % len(test_descriptions))
 # photo features
-test_features = load_photo_features('{}/data/features.pkl'.format(home), test)
+test_features = load_photo_features('{}/data/coco/val_features.pkl'.format(home), test)
 print('Photos: test=%d' % len(test_features))
 # prepare sequences
 X1test, X2test, ytest = create_sequences(tokenizer, max_length, test_descriptions, test_features)
