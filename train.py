@@ -36,6 +36,8 @@ def load_set(filename):
             continue
         # get the image identifier
         identifier = line.split('.')[0]
+        if identifier == '':
+            continue
         dataset.append(identifier)
     return set(dataset)
 
