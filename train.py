@@ -92,7 +92,7 @@ def max_length(descriptions):
     return max(len(d.split()) for d in lines)
 
 # create sequences of images, input sequences and output words for an image
-def create_sequences(tokenizer, max_length, descriptions, photos):
+def create_sequences(tokenizer, max_length, descriptions, photos, vocab_size):
     X1, X2, y = list(), list(), list()
     # walk through each image identifier
     for key, desc_list in descriptions.items():
@@ -113,6 +113,36 @@ def create_sequences(tokenizer, max_length, descriptions, photos):
                 X2.append(in_seq)
                 y.append(out_seq)
     return array(X1), array(X2), array(y)
+
+
+def sequence_generator(tokenizer, max_length, descriptions, photos, vocab_size, batch_size=128):
+    if not descriptions or not photos:
+        raise NotImplementedError('No data yo.')
+
+    while True:
+        X1, X2, y = list(), list(), list()
+        # walk through each image identifier
+            for key, desc_list in descriptions.items():
+                # walk through each description for the image
+                for desc in desc_list:
+                    # encode the sequence
+                    seq = tokenizer.texts_to_sequences([desc])[0]
+                    # split one sequence into multiple X,y pairs
+                    for i in range(1, len(seq)):
+                        # split into input and output pair
+                        in_seq, out_seq = seq[:i], seq[i]
+                        # pad input sequence
+                        in_seq = pad_sequences([in_seq], maxlen=max_length)[0]
+                        # encode output sequence
+                        out_seq = to_categorical([out_seq], num_classes=vocab_size)[0]
+                        # store
+                        X1.append(photos[key][0])
+                        X2.append(in_seq)
+                        y.append(out_seq)
+                        if len(X1) >= batch_size:
+                            yield [array(X1), array(X2)], array(y)
+                            X1, X2, y = list(), list(), list()
+
 
 # define the captioning model
 def define_model(vocab_size, max_length):
@@ -163,7 +193,7 @@ if __name__ == '__main__':
     max_length = max_length(train_descriptions)
     print('Description Length: %d' % max_length)
     # prepare sequences
-    X1train, X2train, ytrain = create_sequences(tokenizer, max_length, train_descriptions, train_features)
+    # X1train, X2train, ytrain = create_sequences(tokenizer, max_length, train_descriptions, train_features, vocab_size)
 
 
     # dev dataset
@@ -180,7 +210,7 @@ if __name__ == '__main__':
     test_features = load_photo_features('{}/data/coco/val_features.pkl'.format(home), test)
     print('Photos: test=%d' % len(test_features))
     # prepare sequences
-    X1test, X2test, ytest = create_sequences(tokenizer, max_length, test_descriptions, test_features)
+    X1test, X2test, ytest = create_sequences(tokenizer, max_length, test_descriptions, test_features, vocab_size)
 
     # fit model
 
@@ -190,4 +220,6 @@ if __name__ == '__main__':
     filepath = 'weights/model-ep{epoch:03d}-loss{loss:.3f}-val_loss{val_loss:.3f}.h5'
     checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
     # fit model
-    model.fit([X1train, X2train], ytrain, epochs=4, verbose=1, callbacks=[checkpoint], validation_data=([X1test, X2test], ytest))
+    # model.fit([X1train, X2train], ytrain, epochs=4, verbose=1, callbacks=[checkpoint], validation_data=([X1test, X2test], ytest))
+
+    model.fit_generator(sequence_generator(tokenizer, max_length, descriptions, photos, vocab_size), steps_per_epoch=4000, verbose=1, callbacks=[checkpoint], validation_data=([X1test, X2test], ytest))
