@@ -139,54 +139,55 @@ def define_model(vocab_size, max_length):
 
 # train dataset
 
+if __name__ == '__main__':
 
-home = str(Path.home())
+    home = str(Path.home())
 
-# load training dataset (6K)
-# filename = '{}/data/Flickr8k_text/Flickr_8k.trainImages.txt'.format(home)
-filename = '{}/data/coco/train_images.txt'.format(home)
-train = load_set(filename)
-print('Dataset: %d' % len(train))
-# descriptions
-# train_descriptions = load_clean_descriptions('{}/data/descriptions.txt'.format(home), train)
-train_descriptions = load_clean_descriptions('{}/data/coco/train_descriptions.txt'.format(home), train)
-print('Descriptions: train=%d' % len(train_descriptions))
-# photo features
-train_features = load_photo_features('{}/data/coco/train_features.pkl'.format(home), train)
-print('Photos: train=%d' % len(train_features))
-# prepare tokenizer
-tokenizer = create_tokenizer(train_descriptions)
-vocab_size = len(tokenizer.word_index) + 1
-print('Vocabulary Size: %d' % vocab_size)
-# determine the maximum sequence length
-max_length = max_length(train_descriptions)
-print('Description Length: %d' % max_length)
-# prepare sequences
-X1train, X2train, ytrain = create_sequences(tokenizer, max_length, train_descriptions, train_features)
+    # load training dataset (6K)
+    # filename = '{}/data/Flickr8k_text/Flickr_8k.trainImages.txt'.format(home)
+    filename = '{}/data/coco/train_images.txt'.format(home)
+    train = load_set(filename)
+    print('Dataset: %d' % len(train))
+    # descriptions
+    # train_descriptions = load_clean_descriptions('{}/data/descriptions.txt'.format(home), train)
+    train_descriptions = load_clean_descriptions('{}/data/coco/train_descriptions.txt'.format(home), train)
+    print('Descriptions: train=%d' % len(train_descriptions))
+    # photo features
+    train_features = load_photo_features('{}/data/coco/train_features.pkl'.format(home), train)
+    print('Photos: train=%d' % len(train_features))
+    # prepare tokenizer
+    tokenizer = create_tokenizer(train_descriptions)
+    vocab_size = len(tokenizer.word_index) + 1
+    print('Vocabulary Size: %d' % vocab_size)
+    # determine the maximum sequence length
+    max_length = max_length(train_descriptions)
+    print('Description Length: %d' % max_length)
+    # prepare sequences
+    X1train, X2train, ytrain = create_sequences(tokenizer, max_length, train_descriptions, train_features)
 
 
-# dev dataset
+    # dev dataset
 
-# load test set
-# filename = '{}/data/Flickr8k_text/Flickr_8k.devImages.txt'.format(home)
-filename = '{}/data/coco/val_images.txt'.format(home)
-test = load_set(filename)
-print('Dataset: %d' % len(test))
-# descriptions
-test_descriptions = load_clean_descriptions('{}/data/coco/val_descriptions.txt'.format(home), test)
-print('Descriptions: test=%d' % len(test_descriptions))
-# photo features
-test_features = load_photo_features('{}/data/coco/val_features.pkl'.format(home), test)
-print('Photos: test=%d' % len(test_features))
-# prepare sequences
-X1test, X2test, ytest = create_sequences(tokenizer, max_length, test_descriptions, test_features)
+    # load test set
+    # filename = '{}/data/Flickr8k_text/Flickr_8k.devImages.txt'.format(home)
+    filename = '{}/data/coco/val_images.txt'.format(home)
+    test = load_set(filename)
+    print('Dataset: %d' % len(test))
+    # descriptions
+    test_descriptions = load_clean_descriptions('{}/data/coco/val_descriptions.txt'.format(home), test)
+    print('Descriptions: test=%d' % len(test_descriptions))
+    # photo features
+    test_features = load_photo_features('{}/data/coco/val_features.pkl'.format(home), test)
+    print('Photos: test=%d' % len(test_features))
+    # prepare sequences
+    X1test, X2test, ytest = create_sequences(tokenizer, max_length, test_descriptions, test_features)
 
-# fit model
+    # fit model
 
-# define the model
-model = define_model(vocab_size, max_length)
-# define checkpoint callback
-filepath = 'weights/model-ep{epoch:03d}-loss{loss:.3f}-val_loss{val_loss:.3f}.h5'
-checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
-# fit model
-model.fit([X1train, X2train], ytrain, epochs=4, verbose=1, callbacks=[checkpoint], validation_data=([X1test, X2test], ytest))
+    # define the model
+    model = define_model(vocab_size, max_length)
+    # define checkpoint callback
+    filepath = 'weights/model-ep{epoch:03d}-loss{loss:.3f}-val_loss{val_loss:.3f}.h5'
+    checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
+    # fit model
+    model.fit([X1train, X2train], ytrain, epochs=4, verbose=1, callbacks=[checkpoint], validation_data=([X1test, X2test], ytest))

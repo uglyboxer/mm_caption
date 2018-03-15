@@ -34,6 +34,10 @@ def parse_image_names(filepath, destination):
         for line in f.readlines():
             id_ = line.split()
             if id_:
+                try:
+                    int(id_[0])
+                except ValueError:
+                    continue
                 image_ids.add(id_[0])
 
     with open(destination, 'w') as g:
