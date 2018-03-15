@@ -210,7 +210,7 @@ if __name__ == '__main__':
     test_features = load_photo_features('{}/data/coco/val_features.pkl'.format(home), test)
     print('Photos: test=%d' % len(test_features))
     # prepare sequences
-    X1test, X2test, ytest = create_sequences(tokenizer, max_length, test_descriptions, test_features, vocab_size)
+    # X1test, X2test, ytest = create_sequences(tokenizer, max_length, test_descriptions, test_features, vocab_size)
 
     # fit model
 
@@ -222,4 +222,4 @@ if __name__ == '__main__':
     # fit model
     # model.fit([X1train, X2train], ytrain, epochs=4, verbose=1, callbacks=[checkpoint], validation_data=([X1test, X2test], ytest))
 
-    model.fit_generator(sequence_generator(tokenizer, max_length, descriptions, photos, vocab_size), steps_per_epoch=4000, verbose=1, callbacks=[checkpoint], validation_data=([X1test, X2test], ytest))
+    model.fit_generator(sequence_generator(tokenizer, max_length, descriptions, photos, vocab_size), steps_per_epoch=4000, verbose=1, callbacks=[checkpoint], validation_data=sequence_generator(tokenizer, max_length, test_descriptions, test_features, vocab_size))
