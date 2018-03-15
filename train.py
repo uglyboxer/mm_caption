@@ -1,5 +1,5 @@
 from pathlib import Path
-from pickle import load
+from pickle import dump, load
 
 from numpy import array
 from keras.preprocessing.text import Tokenizer
@@ -192,6 +192,7 @@ if __name__ == '__main__':
     # determine the maximum sequence length
     max_length = max_length(train_descriptions)
     print('Description Length: %d' % max_length)
+    dump(tokenizer, open('{}/data/coco/tokenizer.pkl'.format(home), 'wb'))
     # prepare sequences
     # X1train, X2train, ytrain = create_sequences(tokenizer, max_length, train_descriptions, train_features, vocab_size)
 
@@ -222,4 +223,5 @@ if __name__ == '__main__':
     # fit model
     # model.fit([X1train, X2train], ytrain, epochs=4, verbose=1, callbacks=[checkpoint], validation_data=([X1test, X2test], ytest))
 
-    model.fit_generator(sequence_generator(tokenizer, max_length, descriptions, photos, vocab_size), steps_per_epoch=4000, verbose=1, callbacks=[checkpoint], validation_data=sequence_generator(tokenizer, max_length, test_descriptions, test_features, vocab_size))
+    model.fit_generator(sequence_generator(tokenizer, max_length, train_descriptions, train_features, vocab_size), steps_per_epoch=4000, verbose=1, callbacks=[checkpoint],
+        validation_data=sequence_generator(tokenizer, max_length, test_descriptions, test_features, vocab_size), validation_steps=20)

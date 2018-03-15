@@ -66,11 +66,11 @@ def generate_desc(model, tokenizer, photo, max_length):
 
 home = str(Path.home())
 # load the tokenizer
-tokenizer = load(open('{}/data/tokenizer.pkl'.format(home), 'rb'))
+tokenizer = load(open('{}/data/coco/tokenizer.pkl'.format(home), 'rb'))
 # pre-define the max sequence length (from training)
 max_length = 34
 # load the model
-model = load_model('weights/model-ep004-loss3.513-val_loss3.858.h5')
+model = load_model('weights/model-ep001-loss4.058-val_loss3.394.h5')
 # load and prepare the photograph
 filename = input("Photo's filename: ")
 if not filename:

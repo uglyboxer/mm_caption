@@ -68,13 +68,13 @@ def create_tokenizer(descriptions):
 
 # load training dataset (6K)
 home = str(Path.home())
-filename = '{}/data/Flickr8k_text/Flickr_8k.trainImages.txt'.format(home)
+filename = '{}/data/coco/train_images.txt'.format(home)
 train = load_set(filename)
 print('Dataset: %d' % len(train))
 # descriptions
-train_descriptions = load_clean_descriptions('{}/data/descriptions.txt'.format(home), train)
+train_descriptions = load_clean_descriptions('{}/data/coco/train_descriptions.txt'.format(home), train)
 print('Descriptions: train=%d' % len(train_descriptions))
 # prepare tokenizer
 tokenizer = create_tokenizer(train_descriptions)
 # save the tokenizer
-dump(tokenizer, open('{}/data/tokenizer.pkl'.format(home), 'wb'))
+dump(tokenizer, open('{}/data/coco/tokenizer.pkl'.format(home), 'wb'))
