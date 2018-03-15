@@ -154,11 +154,13 @@ def define_model(vocab_size, max_length):
     inputs2 = Input(shape=(max_length,))
     se1 = Embedding(vocab_size, 256, mask_zero=True)(inputs2)
     se2 = Dropout(0.2)(se1)
-    se3 = LSTM(1024)(se2)
+    se3 = LSTM(1024, return_sequences=True)(se2)
+    se4 = LSTM(1024, return_sequences=True)(se3)
     # decoder model
-    decoder1 = add([fe2, se3])
+    decoder1 = add([fe2, se4])
     decoder2 = Dense(1024, activation='relu')(decoder1)
-    outputs = Dense(vocab_size, activation='softmax')(decoder2)
+    decoder3 = Dense(1024, activation='relu')(decoder2)
+    outputs = Dense(vocab_size, activation='softmax')(decoder3)
     # tie it together [image, seq] [word]
     model = Model(inputs=[inputs1, inputs2], outputs=outputs)
     model.compile(loss='categorical_crossentropy', optimizer='adam')
@@ -223,5 +225,7 @@ if __name__ == '__main__':
     # fit model
     # model.fit([X1train, X2train], ytrain, epochs=4, verbose=1, callbacks=[checkpoint], validation_data=([X1test, X2test], ytest))
 
-    model.fit_generator(sequence_generator(tokenizer, max_length, train_descriptions, train_features, vocab_size), steps_per_epoch=4000, verbose=1, callbacks=[checkpoint],
-        validation_data=sequence_generator(tokenizer, max_length, test_descriptions, test_features, vocab_size), validation_steps=20)
+    model.fit_generator(sequence_generator(tokenizer, max_length, train_descriptions, train_features, vocab_size),
+        steps_per_epoch=4000, epochs=20, verbose=1, callbacks=[checkpoint],
+        validation_data=sequence_generator(tokenizer, max_length, test_descriptions, test_features, vocab_size),
+        validation_steps=20)
