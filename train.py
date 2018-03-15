@@ -157,7 +157,7 @@ def define_model(vocab_size, max_length):
     se1 = Embedding(vocab_size, 256, mask_zero=True)(inputs2)
     se2 = Dropout(0.1)(se1)
     se3 = LSTM(1024, return_sequences=True)(se2)
-    se4 = LSTM(1024, return_sequences=True)(se3)
+    se4 = LSTM(1024)(se3)
     # decoder model
     decoder1 = add([fe2, se4])
     decoder2 = Dense(1024, activation='relu')(decoder1)
