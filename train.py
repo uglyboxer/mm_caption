@@ -148,9 +148,9 @@ def sequence_generator(tokenizer, max_length, descriptions, photos, vocab_size, 
 def define_model(vocab_size, max_length):
     # feature extractor model
     inputs1 = Input(shape=(4096,))
+    fe1 = Dense(1024, activation='relu')(inputs1)
+    fe1 = Dropout(0.4)(fe1)
     fe2 = Dense(1024, activation='relu')(fe1)
-    fe1 = Dropout(0.4)(inputs1)
-    fe2 = Dense(1024, activation='relu')(fe2)
     fe2 = Dropout(0.4)(fe2)
     # sequence model
     inputs2 = Input(shape=(max_length,))
