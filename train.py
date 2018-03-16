@@ -148,21 +148,21 @@ def sequence_generator(tokenizer, max_length, descriptions, photos, vocab_size, 
 def define_model(vocab_size, max_length):
     # feature extractor model
     inputs1 = Input(shape=(4096,))
-    fe1 = Dropout(0.2)(inputs1)
     fe2 = Dense(1024, activation='relu')(fe1)
-    fe2 = Dropout(0.2)(fe2)
+    fe1 = Dropout(0.4)(inputs1)
     fe2 = Dense(1024, activation='relu')(fe2)
+    fe2 = Dropout(0.4)(fe2)
     # sequence model
     inputs2 = Input(shape=(max_length,))
     se1 = Embedding(vocab_size, 256, mask_zero=True)(inputs2)
-    se2 = Dropout(0.1)(se1)
-    se3 = LSTM(1024, return_sequences=True)(se2)
+    se3 = LSTM(1024, return_sequences=True)(se1)
     se4 = LSTM(1024)(se3)
     # decoder model
     decoder1 = add([fe2, se4])
     decoder2 = Dense(1024, activation='relu')(decoder1)
-    decoder2 = Dropout(.2)(decoder2)
+    decoder2 = Dropout(.5)(decoder2)
     decoder3 = Dense(1024, activation='relu')(decoder2)
+    decoder3 = Dropout(.5)(decoder3)
     outputs = Dense(vocab_size, activation='softmax')(decoder3)
     # tie it together [image, seq] [word]
     model = Model(inputs=[inputs1, inputs2], outputs=outputs)
@@ -231,4 +231,4 @@ if __name__ == '__main__':
     model.fit_generator(sequence_generator(tokenizer, max_length, train_descriptions, train_features, vocab_size),
         steps_per_epoch=4000, epochs=20, verbose=1, callbacks=[checkpoint],
         validation_data=sequence_generator(tokenizer, max_length, test_descriptions, test_features, vocab_size),
-        validation_steps=20)
+        validation_steps=35)
