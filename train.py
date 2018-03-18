@@ -9,7 +9,7 @@ from keras.utils import to_categorical
 from keras.models import Model
 from keras.layers import Input
 from keras.layers import Dense
-from keras.layers import CuDNNLSTM
+from keras.layers import LSTM
 from keras.layers import Embedding
 from keras.layers import Dropout
 from keras.layers.merge import add
@@ -154,8 +154,8 @@ def define_model(vocab_size, max_length):
     # sequence model
     inputs2 = Input(shape=(max_length,))
     se1 = Embedding(vocab_size, 256, mask_zero=True)(inputs2)
-    se1 = CuDNNLSTM(1024, return_sequences=True)(se1)
-    se1 = CuDNNLSTM(1024)(se1)
+    se1 = LSTM(1024, return_sequences=True)(se1)
+    se1 = LSTM(1024)(se1)
     # decoder model
     decoder1 = add([fe1, se1])
     decoder1 = Dense(1024, activation='relu')(decoder1)
