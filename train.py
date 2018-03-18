@@ -9,7 +9,7 @@ from keras.utils import to_categorical
 from keras.models import Model
 from keras.layers import Input
 from keras.layers import Dense
-from keras.layers import LSTM
+from keras.layers import CuDNNLSTM
 from keras.layers import Embedding
 from keras.layers import Dropout
 from keras.layers.merge import add
@@ -148,22 +148,21 @@ def sequence_generator(tokenizer, max_length, descriptions, photos, vocab_size, 
 def define_model(vocab_size, max_length):
     # feature extractor model
     inputs1 = Input(shape=(4096,))
-    fe1 = Dense(1024, activation='relu')(inputs1)
-    fe1 = Dropout(0.4)(fe1)
-    fe2 = Dense(1024, activation='relu')(fe1)
-    fe2 = Dropout(0.4)(fe2)
+    fe1 = Dropout(0.2)(inputs1)
+    fe1 = Dense(1024, activation='relu')(fe1)
+    fe1 = Dense(1024, activation='relu')(fe1)
     # sequence model
     inputs2 = Input(shape=(max_length,))
     se1 = Embedding(vocab_size, 256, mask_zero=True)(inputs2)
-    se3 = LSTM(1024, return_sequences=True)(se1)
-    se4 = LSTM(1024)(se3)
+    se1 = CuDNNLSTM(1024, return_sequences=True)(se1)
+    se1 = CuDNNLSTM(1024)(se1)
     # decoder model
-    decoder1 = add([fe2, se4])
-    decoder2 = Dense(1024, activation='relu')(decoder1)
-    decoder2 = Dropout(.5)(decoder2)
-    decoder3 = Dense(1024, activation='relu')(decoder2)
-    decoder3 = Dropout(.5)(decoder3)
-    outputs = Dense(vocab_size, activation='softmax')(decoder3)
+    decoder1 = add([fe1, se1])
+    decoder1 = Dense(1024, activation='relu')(decoder1)
+    decoder1 = Dropout(.3)(decoder1)
+    decoder1 = Dense(1024, activation='relu')(decoder1)
+    decoder1 = Dropout(.3)(decoder1)
+    outputs = Dense(vocab_size, activation='softmax')(decoder1)
     # tie it together [image, seq] [word]
     model = Model(inputs=[inputs1, inputs2], outputs=outputs)
     model.compile(loss='categorical_crossentropy', optimizer='adam')
